@@ -3,4 +3,6 @@ import { store } from "@/store/index";
 
 interface UserState {}
 
-export const UseUserStore = defineStore("main", {});
+export const UseUserStore = defineStore("main", {
+    
+});

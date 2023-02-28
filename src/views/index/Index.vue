@@ -10,7 +10,6 @@ import router from "@/router";
 const enter = () => {
     alert('success')
     router.push('/game')
-
 };
 </script>
 
