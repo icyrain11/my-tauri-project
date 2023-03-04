@@ -107,7 +107,7 @@ scene.add(cube);
 </script>
 
 
-<style>
+<style scoped>
 html,
 body {
   overflow: hidden;

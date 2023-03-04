@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { store } from "@/store/index";
-import { doLoginByUsername, Login } from "@/api/sys/login";
+import { loginByPhone, LoginReqData, doLogout } from "@/api/sys/login";
 
-interface UserInfo {}
+interface UserInfo {
+  username: string;
+}
 
 export const UseUserStore = defineStore("main", {
   state: () => {
@@ -18,9 +20,23 @@ export const UseUserStore = defineStore("main", {
     /**
      * @description: login
      */
-    async login(loginForm: Login.LoginReqData) {
-      const data = await doLoginByUsername(loginForm);
-      console.log(data);
+    async login(loginForm: LoginReqData) {
+      try{
+        const res = await loginByPhone(loginForm);
+        const token: string = res.data.token;
+        this.token = token;
+        localStorage.setItem("Authoreziton", token)
+      }catch (error){
+        
+      }
+    },
+    /**
+     * @description: logout
+     */
+    async logout() {
+      const data = await doLogout();
+      //如果成功则退出登录
+      localStorage.setItem("token", "");
     },
   },
 });

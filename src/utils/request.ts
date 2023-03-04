@@ -5,18 +5,19 @@ import axios, {
   AxiosResponse,
 } from "axios";
 import { message } from "ant-design-vue";
+import router from "@/router";
 
 // 数据返回的接口
 // 定义请求响应参数，不含data
 interface Result {
   flag: boolean;
   code: number;
-  msg: string;
+  message: string;
 }
 
 // 请求响应参数，包含data
 interface ResultData<T = any> extends Result {
-  data?: T;
+  data: T;
 }
 
 const URL: string = "http://localhost:8080";
@@ -55,7 +56,7 @@ class RequestHttp {
         return {
           ...config,
           headers: {
-            "x-access-token": token, // 请求头中携带token信息
+            "Authorization": token, // 请求头中携带token信息
           },
         };
       },
@@ -71,21 +72,18 @@ class RequestHttp {
      */
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
-        // console.log(response);
         const { data, config } = response; // 解构
         if (data.code === RequestEnums.OVERDUE) {
           // 登录信息失效，应跳转到登录页面，并清空本地的token
           localStorage.setItem("token", "");
-          // router.replace({
-          //   path: '/login'
-          // })
-          console.log("no token" + data);
+          router.replace({
+            path: "/login",
+          });
           return Promise.reject(data);
         }
         // 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
         if (data.code && data.code !== RequestEnums.SUCCESS) {
-          message.error(data); // 此处也可以使用组件提示报错信息
-          console.log("no error" + data);
+          message.error(data.message); // 此处也可以使用组件提示报错信息
           return Promise.reject(data);
         }
         return data;
